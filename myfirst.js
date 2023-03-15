@@ -1,8 +1,6 @@
-function purchaseBook(title, author, price, discountPercentage, taxPercentage, stock, amountToPurchase) {
-    // Constants
+function purchaseBook(title, author, price, discountPercentage, taxPercentage, stock, amountToPurchase, creditTerm) {
     const TAX_RATE = 0.01;
   
-    // Check if the amount of books to be purchased is available in stock
     if (amountToPurchase > stock) {
       console.log("Sorry, this book is out of stock.");
       return;
@@ -10,17 +8,18 @@ function purchaseBook(title, author, price, discountPercentage, taxPercentage, s
   
     let totalPrice = 0;
     let remainingStock = stock;
-    
+    const creditPrice = totalPrice / creditTerm;
+
     for (let i = 0; i < amountToPurchase; i++) {
       if (remainingStock === 0) {
         console.log("Sorry, the remaining stock is not enough to fulfill your order.");
         break;
       }
-  
+
       const discountAmount = price * (discountPercentage / 100);
   
       const priceAfterDiscount = price - discountAmount;
-
+  
       const taxAmount = priceAfterDiscount * (taxPercentage / 100);
   
       const priceAfterTax = priceAfterDiscount + taxAmount;
@@ -28,6 +27,16 @@ function purchaseBook(title, author, price, discountPercentage, taxPercentage, s
       totalPrice += priceAfterTax;
   
       remainingStock -= 1;
+    }
+    const creditPricePerTerm = totalPrice / creditTerm;
+  
+    const creditDetails = [];
+  
+    for (let i = 1; i <= creditTerm; i++) {
+      const termPrice = creditPricePerTerm * i;
+      const dueDate = new Date();
+      dueDate.setMonth(dueDate.getMonth() + i);
+      creditDetails.push({ term: i, price: termPrice.toFixed(2), dueDate: dueDate.toLocaleDateString() });
     }
   
     console.log("Title:", title);
@@ -44,10 +53,14 @@ function purchaseBook(title, author, price, discountPercentage, taxPercentage, s
       console.log("This book is now out of stock.");
     }
   
+    console.log("Credit Details:");
+    console.log(creditDetails);
+  
     return totalPrice;
   }
   
+  
 
-const finalPrice = purchaseBook("Marmut Merah Jambu", "Raditya Dika", 20, 10, 8, 5, 4);
+const finalPrice = purchaseBook("Marmut Merah Jambu", "Raditya Dika", 20, 10, 8, 5, 3, 6);
 
   
